@@ -8,7 +8,7 @@ apt update && apt upgrade -y
 
 # 安装 nginx
 # 参见 https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/
-sudo apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+sudo apt install -y curl gnupg2 ca-certificates lsb-release debian-archive-keyring
 
 curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
@@ -223,19 +223,19 @@ sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FI
 # 安装 acme.sh
 apt update && apt install -y socat
 curl https://get.acme.sh | sh -s email=my@example.com
-source ~/.acme.sh/acme.sh.env
+
 
 # 将默认的 zerossl 设置为 lets encrypt
-# acme.sh --set-default-ca --server letsencrypt
+# /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
 
 # 申请证书。多域名 SAN模式，https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert
 if systemctl is-active --quiet nginx; then
   sudo systemctl stop nginx
 fi
-acme.sh --issue -d "$DOMAIN" --standalone -d "www.$DOMAIN"
+/root/.acme.sh/acme.sh --issue -d "$DOMAIN" --standalone -d "www.$DOMAIN"
 
 mkdir -p /usr/local/etc/xray/ssl
-acme.sh --install-cert -d "$DOMAIN" \
+/root/.acme.sh/acme.sh --install-cert -d "$DOMAIN" \
   --cert-file /usr/local/etc/xray/ssl/${DOMAIN}.cer \
   --key-file /usr/local/etc/xray/ssl/${DOMAIN}.key \
   --fullchain-file /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer \

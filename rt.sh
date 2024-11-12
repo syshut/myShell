@@ -36,8 +36,8 @@ fi
 
 # 从生成的文件中读取数据
 UUID=$(cat uuid)
-PRIVATE_KEY=$(grep -oP '(?<=Private key: ).*' key)
-PUBLIC_KEY=$(grep -oP '(?<=Public key: ).*' key)
+PRIVATE_KEY=$(awk -F ': ' '/Private key/ {print $2}' key)
+PUBLIC_KEY=$(awk -F ': ' '/Public key/ {print $2}' key)
 SHORTID=$(cat sid)
 
 # Step 2: 下载配置文件
@@ -58,7 +58,7 @@ fi
 read -p "请输入要修改的端口号 (如 8443，不要443): " PORT
 
 # 验证输入是否为1到5位的数字，并且在1到65535之间
-if ! [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
+if ! [[ "$PORT" =~ ^[1-9][0-9]{0,4}$ ]] || [ "$PORT" -gt 65535 ]; then
     echo "端口号无效！"
     exit 1
 fi
@@ -88,7 +88,7 @@ sed -i "s/\"dest\": \".*\"/\"dest\": \"$DEST:443\"/" "$CONFIG_FILE"
 sed -i "s/\"serverNames\": \[.*\]/\"serverNames\": [\"$DEST\"]/" "$CONFIG_FILE"
 
 # Step 6: 修改 "privateKey"
-sed -i "s/\"privateKey\": \".*\"/\"privateKey\": \"$PRIVATE_KEY\"/" "$CONFIG_FILE"
+sed -i "s|\"privateKey\": \".*\"|\"privateKey\": \"$PRIVATE_KEY\"|" "$CONFIG_FILE"
 
 # Step 7: 修改 "shortIds"
 sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
@@ -97,10 +97,15 @@ sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
 
 systemctl daemon-reload
-systemctl restart xray
-systemctl status xray
+if systemctl restart xray; then
+    echo "Xray 服务已成功重启"
+else
+    echo "Xray 服务重启失败"
+    systemctl status xray
+    exit 1
+fi
 
-IP=$(curl -s ipinfo.io/ip)
+IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
 echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DEST&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DEST&serviceName=$SERVICE_NAME&mode=gun#test
 "

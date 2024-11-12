@@ -139,13 +139,6 @@ read -p "请输入要修改的端口号 (如 12345): " PORT
 if ! [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
     echo "端口号无效！"
     exit 1
-fi
-
-read -p "请输入域名 (如 example.com): " DOMAIN
-if ! [[ "$DOMAIN" =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$ ]]; then
-    echo "域名无效！"
-    exit 1
-fi
 
 read -p "请输入 serviceName (如 myservice): " SERVICE_NAME
 if [ -z "$SERVICE_NAME" ]; then

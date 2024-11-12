@@ -223,7 +223,7 @@ sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FI
 # 安装 acme.sh
 apt update && apt install -y socat
 curl https://get.acme.sh | sh -s email=my@example.com
-source ~/.bashrc
+source ~/.acme.sh/acme.sh.env
 
 # 将默认的 zerossl 设置为 lets encrypt
 # acme.sh --set-default-ca --server letsencrypt

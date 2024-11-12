@@ -54,7 +54,7 @@ if [ ! -f "$CONFIG_FILE" ] || [ ! -s "$CONFIG_FILE" ]; then
 fi
 
 # 用户输入并验证
-read -p "请输入要修改的端口号 (如 8443): " PORT
+read -p "请输入要修改的端口号 (如 8443，不要443): " PORT
 
 # 验证输入是否为1到5位的数字，并且在1到65535之间
 if ! [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || [ "$PORT" -lt 1 ] || [ "$PORT" -gt 65535 ]; then
@@ -94,3 +94,7 @@ sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
 
 # Step 8: 修改 "serviceName"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
+
+systemctl daemon-reload
+systemctl restart xray
+systemctl status xray

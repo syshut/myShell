@@ -59,7 +59,7 @@ fi
 DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
 ROOT_PATH=$(grep -E '^ *root ' "$DEFAULT_CONF" | awk '{print $2}' | tr -d ';')
 if [ -n "$ROOT_PATH" ]; then
-  sudo sed -i "s|root .*;|root $ROOT_PATH;|" "$CONFIG_FILE"
+  sudo sed -i "s#root .*;#root $ROOT_PATH;#" "$CONFIG_FILE"
 else
   echo "未找到 root 指令，跳过替换。"
 fi

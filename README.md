@@ -12,5 +12,5 @@ curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/history
 
 ```
 apt install -y sudo curl
-curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/rt.sh && chmod +x history.sh && sudo ./rt.sh
+curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/rt.sh && chmod +x rt.sh && sudo ./rt.sh
 ```

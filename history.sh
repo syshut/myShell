@@ -70,7 +70,7 @@ sudo sed -i "s#ssl_certificate_key .*#ssl_certificate_key /usr/local/etc/xray/ss
 
 # Step 6: 修改 location /你的 ServiceName
 read -p "请输入 ServiceName (如 mygrpc): " SERVICE_NAME
-sudo sed -i "s|location /你的 ServiceName|location /$SERVICE_NAME|" "$CONFIG_FILE"
+sudo sed -i "s#location /你的 ServiceName#location /$SERVICE_NAME#" "$CONFIG_FILE"
 
 
 

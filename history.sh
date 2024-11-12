@@ -1,7 +1,7 @@
 # 设置虚拟内存
 apt install -y sudo curl
-curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/create_swap.sh
-chmod +x create_swap.sh && sudo ./create_swap.sh
+curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/history.sh
+chmod +x history.sh && sudo ./history.sh
 apt update && apt upgrade -y
 
 # 安装 nginx
@@ -21,8 +21,8 @@ http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" \
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
     | sudo tee /etc/apt/preferences.d/99nginx
 
-sudo apt update
-sudo apt install -y nginx
+apt update
+apt install -y nginx
 
 
 
@@ -216,3 +216,8 @@ fi
 systemctl restart nginx && systemctl restart xray
 
 echo "脚本执行完成！"
+
+
+
+
+

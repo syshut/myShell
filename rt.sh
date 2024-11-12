@@ -37,6 +37,7 @@ fi
 # 从生成的文件中读取数据
 UUID=$(cat uuid)
 PRIVATE_KEY=$(grep -oP '(?<=Private key: ).*' key)
+PUBLIC_KEY=$(grep -oP '(?<=Public key: ).*' key)
 SHORTID=$(cat sid)
 
 # Step 2: 下载配置文件
@@ -98,3 +99,8 @@ sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FI
 systemctl daemon-reload
 systemctl restart xray
 systemctl status xray
+
+IP=$(curl -s ipinfo.io/ip)
+
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DEST&fp=chrome&pbk=$PUBLIC_KEY&type=grpc&authority=$DEST&serviceName=$SERVICE_NAME&mode=gun#test
+"

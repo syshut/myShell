@@ -57,6 +57,25 @@ fi
 
 # Step 4: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
 DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
+NEW_ROOT=$(awk '/location \/ {/,/}/ {if ($1 == "root") print $2}' "$DEFAULT_CONF" | tr -d ';')
+# 检查是否成功提取到 root 值
+if [ -z "$NEW_ROOT" ]; then
+    echo "Error: Could not find 'root' directive in $default_conf"
+    exit 1
+fi
+echo "Extracted root: $NEW_ROOT"
+
+# 使用 sed 替换 grpc.conf 文件中的 root 值
+sed -i "s|^\s*root .*;|root $NEW_ROOT;|" "$CONFIG_FILE"
+
+# 确认修改成功
+if grep -q "root $NEW_ROOT;" "$CONFIG_FILE"; then
+    echo "Updated root directive in $CONFIG_FILE to: $NEW_ROOT"
+else
+    echo "Error: Failed to update root directive in $CONFIG_FILE"
+    exit 1
+fi
+
 
 
 # Step 5: 修改 ssl_certificate 和 ssl_certificate_key

@@ -65,14 +65,26 @@ else
 fi
 
 # Step 5: 修改 ssl_certificate 和 ssl_certificate_key
-sudo sed -i "s#ssl_certificate .*#ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;#" "$CONFIG_FILE"
-sudo sed -i "s#ssl_certificate_key .*#ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;#" "$CONFIG_FILE"
+if [ -n "$DOMAIN" ]; then
+  sudo sed -i "s#ssl_certificate .*#ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;#" "$CONFIG_FILE"
+  sudo sed -i "s#ssl_certificate_key .*#ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;#" "$CONFIG_FILE"
+else
+  echo "域名不能为空，无法修改 ssl 配置。"
+  exit 1
+fi
 
 # Step 6: 修改 location /你的 ServiceName
+
 read -p "请输入 ServiceName (如 mygrpc): " SERVICE_NAME
-sudo sed -i "s#location /你的 ServiceName#location /$SERVICE_NAME#" "$CONFIG_FILE"
+if [ -z "$SERVICE_NAME" ]; then
+  echo "ServiceName 不能为空！"
+  exit 1
+fi
 
+# 处理 SERVICE_NAME 中的特殊字符
+SERVICE_NAME_ESCAPED=$(echo "$SERVICE_NAME" | sed 's/[&/\]/\\&/g')
 
+sudo sed -i "s#location /你的 ServiceName#location /$SERVICE_NAME_ESCAPED#" "$CONFIG_FILE"
 
 
 

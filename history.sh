@@ -18,8 +18,10 @@ http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" \
     | sudo tee /etc/apt/sources.list.d/nginx.list
 
 
-echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
-    | sudo tee /etc/apt/preferences.d/99nginx
+echo "Package: *
+Pin: origin nginx.org
+Pin: release o=nginx
+Pin-Priority: 900" | sudo tee /etc/apt/preferences.d/99nginx
 
 apt update
 apt install -y nginx
@@ -216,3 +218,8 @@ fi
 systemctl restart nginx && systemctl restart xray
 
 echo "脚本执行完成！"
+
+
+
+
+

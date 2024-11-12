@@ -57,12 +57,3 @@ fi
 
 # Step 4: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
 DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
-
-
-# Step 5: 修改 ssl_certificate 和 ssl_certificate_key
-sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$CONFIG_FILE"
-sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$CONFIG_FILE"
-
-# Step 6: 修改 location /你的 ServiceName
-read -p "请输入 ServiceName (如 mygrpc): " SERVICE_NAME
-sudo sed -i "s|location /你的 ServiceName|location /$SERVICE_NAME|" "$CONFIG_FILE"

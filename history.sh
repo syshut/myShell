@@ -50,7 +50,7 @@ fi
 
 # Step 3: 替换 server_name
 read -p "请输入域名 (如 example.com): " DOMAIN
-if [[ -z "$DOMAIN" ]]; then
+if [ -z "$DOMAIN" ]; then
   echo "域名不能为空！"
   exit 1
 fi
@@ -152,7 +152,7 @@ if ! [[ "$DOMAIN" =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$ ]]; then
 fi
 
 read -p "请输入 serviceName (如 myservice): " SERVICE_NAME
-if [[ -z "$SERVICE_NAME" ]]; then
+if [ -z "$SERVICE_NAME" ]; then
   echo "ServiceName 不能为空！"
   exit 1
 fi
@@ -218,8 +218,3 @@ fi
 systemctl restart nginx && systemctl restart xray
 
 echo "脚本执行完成！"
-
-
-
-
-

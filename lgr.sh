@@ -66,9 +66,14 @@ echo "正在拆分配置文件..."
 for FIELD in log routing inbounds outbounds policy; do
     OUTPUT_FILE="${XRAY_CONFIG_DIR}/${FIELD}.json"
     
-    # 使用 jq 提取字段并保存为新的 JSON 文件
-    jq "del(.${FIELD} | select(. == null)) | .${FIELD}" "$CONFIG_FILE" > "$OUTPUT_FILE"
-    
+    # 对于对象类型（如 log、routing、policy），保留最外层的大括号
+    if [ "$FIELD" == "log" ] || [ "$FIELD" == "routing" ] || [ "$FIELD" == "policy" ]; then
+        jq ". | {${FIELD}: .${FIELD}}" "$CONFIG_FILE" > "$OUTPUT_FILE"
+    # 对于数组类型（如 inbounds、outbounds），保留父级包裹结构
+    elif [ "$FIELD" == "inbounds" ] || [ "$FIELD" == "outbounds" ]; then
+        jq ". | {${FIELD}: .${FIELD}}" "$CONFIG_FILE" > "$OUTPUT_FILE"
+    fi
+
     # 确保文件生成成功
     if [ ! -s "$OUTPUT_FILE" ]; then
         echo "拆分文件失败：$OUTPUT_FILE"

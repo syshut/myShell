@@ -5,6 +5,12 @@ curl -O https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/create_
 chmod +x create_swap.sh && sudo ./create_swap.sh
 apt update && apt upgrade -y
 
+# 检查 jq 是否安装，如果没有安装，则进行安装
+if ! command -v jq &> /dev/null; then
+    echo "jq 未安装，正在安装 jq..."
+    sudo apt install -y jq
+fi
+
 # 安装 xray
 bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u root
 
@@ -96,6 +102,32 @@ sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
 # Step 8: 修改 "serviceName"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
 
+# Step 9: 拆分配置文件，生成不同部分的单独文件
+echo "正在拆分配置文件..."
+for FIELD in log routing inbounds outbounds policy; do
+    OUTPUT_FILE="${XRAY_CONFIG_DIR}/${FIELD}.json"
+    
+    # 对于对象类型（如 log、routing、policy），保留最外层的大括号
+    if [ "$FIELD" == "log" ] || [ "$FIELD" == "routing" ] || [ "$FIELD" == "policy" ]; then
+        jq ". | {${FIELD}: .${FIELD}}" "$CONFIG_FILE" > "$OUTPUT_FILE"
+    # 对于数组类型（如 inbounds、outbounds），保留父级包裹结构
+    elif [ "$FIELD" == "inbounds" ] || [ "$FIELD" == "outbounds" ]; then
+        jq ". | {${FIELD}: .${FIELD}}" "$CONFIG_FILE" > "$OUTPUT_FILE"
+    fi
+
+    # 确保文件生成成功
+    if [ ! -s "$OUTPUT_FILE" ]; then
+        echo "拆分文件失败：$OUTPUT_FILE"
+        exit 1
+    fi
+
+    echo "已生成拆分文件：$OUTPUT_FILE"
+done
+
+# 删除原始配置文件，因为已拆分
+rm -f "$CONFIG_FILE"
+
+# 重载并重启服务
 systemctl daemon-reload
 if systemctl restart xray; then
     echo "Xray 服务已成功重启"
@@ -107,5 +139,4 @@ fi
 
 IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
-echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DEST&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DEST&serviceName=$SERVICE_NAME&mode=gun#test
-"
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DEST&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DEST&serviceName=$SERVICE_NAME&mode=gun#test"

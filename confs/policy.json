@@ -1,10 +1,10 @@
 {
-	"policy": {
-		"levels": {
-			"0": {
-				"handshake": 2,
-				"connIdle": 120
-			}
-		}
-	}
+    "policy": {
+        "levels": {
+            "0": {
+                "handshake": 2,
+                "connIdle": 120
+            }
+        }
+    }
 }

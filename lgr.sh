@@ -63,11 +63,20 @@ fi
 
 # 使用 jq 拆分 JSON 文件
 echo "正在拆分配置文件..."
-jq '.log' "$CONFIG_FILE" > "$XRAY_CONFIG_DIR/log.json"
-jq '.routing' "$CONFIG_FILE" > "$XRAY_CONFIG_DIR/routing.json"
-jq '.inbounds' "$CONFIG_FILE" > "$XRAY_CONFIG_DIR/inbounds.json"
-jq '.outbounds' "$CONFIG_FILE" > "$XRAY_CONFIG_DIR/outbounds.json"
-jq '.policy' "$CONFIG_FILE" > "$XRAY_CONFIG_DIR/policy.json"
+for FIELD in log routing inbounds outbounds policy; do
+    OUTPUT_FILE="${XRAY_CONFIG_DIR}/${FIELD}.json"
+    
+    # 使用 jq 提取字段并保存为新的 JSON 文件
+    jq "del(.${FIELD} | select(. == null)) | .${FIELD}" "$CONFIG_FILE" > "$OUTPUT_FILE"
+    
+    # 确保文件生成成功
+    if [ ! -s "$OUTPUT_FILE" ]; then
+        echo "拆分文件失败：$OUTPUT_FILE"
+        exit 1
+    fi
+
+    echo "已生成拆分文件：$OUTPUT_FILE"
+done
 
 # 删除原始配置文件，因为已拆分
 rm -f "$CONFIG_FILE"

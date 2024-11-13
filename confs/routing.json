@@ -1,18 +1,18 @@
 {
-	"routing": {
-		"domainStrategy": "IPIfNonMatch",
-		"rules": [
-			{
-				"type": "field",
-				"port": "80",
-				"network": "udp",
-				"outboundTag": "block"
-			},
-			{
-				"type": "field",
-				"ip": ["geoip:private"],
-				"outboundTag": "block"
-			}
-		]
-	}
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "type": "field",
+                "port": "80",
+                "network": "udp",
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "ip": ["geoip:private"],
+                "outboundTag": "block"
+            }
+        ]
+    }
 }

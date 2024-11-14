@@ -258,4 +258,4 @@ fi
 # 输出分享链接
 IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
-echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DEST&serviceName=$SERVICE_NAME&mode=gun#test"
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DOMAIN&serviceName=$SERVICE_NAME&mode=gun#test"

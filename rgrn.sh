@@ -65,14 +65,14 @@ echo "请选择是否偷自己（输入1选择偷自己，输入2选择偷别人
 read -p "请输入选择（1/2）: " CHOICE
 if [ "$CHOICE" -eq 1 ]; then
 		echo "您选择了偷自己"
-		read -p "请输入您的自由域名 (如 example.com): " DOMAIN
+		read -p "请输入您的自有域名 (如 example.com): " DOMAIN
 		if [ -z "$DOMAIN" ]; then
 				echo "Domain 不能为空！"
 				exit 1
 		fi
 else
 		echo "您选择了偷别人"
-		read -p "请输入 dest (如 www.uclahealth.org): " DOMAIN
+		read -p "请输入 dest 伪装域名 (如 www.uclahealth.org): " DOMAIN
 		if [ -z "$DOMAIN" ]; then
 				echo "dest 不能为空！"
 				exit 1

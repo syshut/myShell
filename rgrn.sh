@@ -79,6 +79,8 @@ else
 		fi
 fi
 
+read -p "请输入别名: " REMARKS
+
 read -p "请输入要修改的端口号 (如 8443，不要443): " PORT
 
 # 验证输入是否为1到5位的数字，并且在1到65535之间
@@ -258,4 +260,4 @@ fi
 # 输出分享链接
 IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
-echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DOMAIN&serviceName=$SERVICE_NAME&mode=gun#test"
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&authority=$DOMAIN&serviceName=$SERVICE_NAME&mode=gun#$REMARKS"

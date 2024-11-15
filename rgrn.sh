@@ -116,7 +116,10 @@ sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
 # Step 8: 修改 "serviceName"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
 
-# Step 9: 拆分配置文件，生成不同部分的单独文件
+# Step 9: 修改 "domainStrategy" 字段
+sed -i 's/"domainStrategy": "IPIfNonMatch"/"domainStrategy": "AsIs"/' "$CONFIG_FILE"
+
+# Step 10: 拆分配置文件，生成不同部分的单独文件
 echo "正在拆分配置文件..."
 for FIELD in log routing inbounds outbounds policy; do
 	OUTPUT_FILE="${XRAY_CONFIG_DIR}/${FIELD}.json"

@@ -120,7 +120,7 @@ sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FI
 echo "正在拆分配置文件..."
 for FIELD in log routing inbounds outbounds policy; do
 	OUTPUT_FILE="${XRAY_CONFIG_DIR}/${FIELD}.json"
-		
+
 	# 对于对象类型（如 log、routing、policy），保留最外层的大括号
 	if [ "$FIELD" == "log" ] || [ "$FIELD" == "routing" ] || [ "$FIELD" == "policy" ]; then
 		jq ". | {${FIELD}: .${FIELD}}" "$CONFIG_FILE" > "$OUTPUT_FILE"

@@ -65,7 +65,7 @@ echo "请选择是否偷自己（输入1选择偷自己，输入2选择偷别人
 read -p "请输入选择（1/2）: " CHOICE
 if [ "$CHOICE" -eq 1 ]; then
 	echo "您选择了偷自己"
-	read -p "请输入您的自有域名 (如 example.com): " DOMAIN
+	read -p "请输入您的自有域名 (不含 www，如 example.com): " DOMAIN
 	if [ -z "$DOMAIN" ]; then
 		echo "Domain 不能为空！"
 		exit 1
@@ -188,10 +188,17 @@ if [ "$CHOICE" -eq 1 ]; then
 	# /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
 
 	# 申请证书。多域名 SAN模式，https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert
+	# DNS Cloudflare API， https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf
+ 
 	if systemctl is-active --quiet nginx; then
 		sudo systemctl stop nginx
 	fi
-	/root/.acme.sh/acme.sh --issue -d "$DOMAIN" --standalone -d "www.$DOMAIN"
+
+
+	read -p "请输入 Cloudflare 用户 ID: " CF_Account_ID
+	export CF_Account_ID="$CF_Account_ID"
+ 
+	/root/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN -d *.$DOMAIN
 
 	mkdir -p /usr/local/etc/xray/ssl
 	/root/.acme.sh/acme.sh --install-cert -d "$DOMAIN" \

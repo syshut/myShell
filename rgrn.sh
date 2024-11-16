@@ -200,10 +200,10 @@ if [ "$CHOICE" -eq 1 ]; then
 	export CF_Account_ID="$CF_Account_ID"
  	export CF_Token="$CF_Token"
  
-	/root/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN -d *.$DOMAIN
+	/root/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN -d *.$DOMAIN --keylength ec-384
 
 	mkdir -p /usr/local/etc/xray/ssl
-	/root/.acme.sh/acme.sh --install-cert -d "$DOMAIN" \
+	/root/.acme.sh/acme.sh --install-cert -d "$DOMAIN" --ecc \
 		--cert-file /usr/local/etc/xray/ssl/${DOMAIN}.cer \
 		--key-file /usr/local/etc/xray/ssl/${DOMAIN}.key \
 		--fullchain-file /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer \

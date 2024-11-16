@@ -6,6 +6,18 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# 输出当前服务器的内存和 swap 使用情况
+echo -e "\n\033[34m当前服务器的内存和 swap 情况：\033[0m"
+free -h
+
+# 输出总物理内存大小
+TOTAL_MEM=$(free -h | awk '/^Mem:/ {print $2}')
+echo -e "\033[34m总内存大小：$TOTAL_MEM\033[0m"
+
+# 输出总 swap 大小
+TOTAL_SWAP=$(free -h | awk '/^Swap:/ {print $2}')
+echo -e "\033[34m当前 swap 大小：$TOTAL_SWAP\033[0m\n"
+
 # 提示用户输入 swap 大小（单位：MB）
 read -p "请输入 swap 大小（单位：MB，例如 1024 表示 1GB）: " SWAP_SIZE
 

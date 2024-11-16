@@ -261,6 +261,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	# Step 5: 修改 ssl_certificate 和 ssl_certificate_key
 	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|ssl_ciphers .*|ssl_ciphers ALL:!aNULL:!eNULL:!EXPORT:!SSLv2:!DES:!3DES:!MD5:!PSK:!RC4:!IDEA:!SEED:!CBC:!DHE:!kRSA:!SRP:!kDHd:!DSS:!EXP:!ADH:!AECDH:!DH:!LOW:@STRENGTH;|" "$NGINX_CONFIG_FILE"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 

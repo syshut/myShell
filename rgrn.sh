@@ -196,7 +196,9 @@ if [ "$CHOICE" -eq 1 ]; then
 
 
 	read -p "请输入 Cloudflare 用户 ID: " CF_Account_ID
+ 	read -p "请输入 Cloudflare DNS 令牌: " CF_Token
 	export CF_Account_ID="$CF_Account_ID"
+ 	export CF_Token="$CF_Token"
  
 	/root/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN -d *.$DOMAIN
 

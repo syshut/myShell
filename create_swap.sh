@@ -6,17 +6,17 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-# 输出当前服务器的内存和 swap 使用情况
-echo -e "\n\033[34m当前服务器的内存和 swap 情况：\033[0m"
-free -h
+# 输出当前服务器的内存和 swap 使用情况（以 MB 为单位）
+echo -e "\n\033[34m当前服务器的内存和 swap 情况（单位：MB）：\033[0m"
+free -m
 
-# 输出总物理内存大小
-TOTAL_MEM=$(free -h | awk '/^Mem:/ {print $2}')
-echo -e "\033[34m总内存大小：$TOTAL_MEM\033[0m"
+# 输出总物理内存大小（以 MB 为单位）
+TOTAL_MEM=$(free -m | awk '/^Mem:/ {print $2}')
+echo -e "\033[34m总内存大小：${TOTAL_MEM}MB\033[0m"
 
-# 输出总 swap 大小
-TOTAL_SWAP=$(free -h | awk '/^Swap:/ {print $2}')
-echo -e "\033[34m当前 swap 大小：$TOTAL_SWAP\033[0m\n"
+# 输出总 swap 大小（以 MB 为单位）
+TOTAL_SWAP=$(free -m | awk '/^Swap:/ {print $2}')
+echo -e "\033[34m当前 swap 大小：${TOTAL_SWAP}MB\033[0m\n"
 
 # 提示用户输入 swap 大小（单位：MB）
 read -p "请输入 swap 大小（单位：MB，例如 1024 表示 1GB）: " SWAP_SIZE
@@ -27,15 +27,15 @@ if ! [[ "$SWAP_SIZE" =~ ^[0-9]+$ ]] || [[ "$SWAP_SIZE" -le 0 ]]; then
     exit 1
 fi
 
-# 检查磁盘空间是否足够
+# 检查磁盘空间是否足够（以 MB 为单位）
 AVAILABLE_SPACE=$(df / --output=avail -m | tail -1)
 if [[ "$AVAILABLE_SPACE" -le "$SWAP_SIZE" ]]; then
     echo -e "\033[31m磁盘空间不足，无法创建 ${SWAP_SIZE}MB 的 swap 文件。\033[0m"
     exit 1
 fi
 
-echo -e "\n\033[34m当前内存和 swap 情况：\033[0m"
-free -h
+echo -e "\n\033[34m当前内存和 swap 情况（单位：MB）：\033[0m"
+free -m
 
 # 停用所有 swap 分区
 echo -e "\033[33m停用当前所有 swap 分区...\033[0m"
@@ -73,8 +73,8 @@ if ! swapon /swap; then
     exit 1
 fi
 
-echo -e "\n\033[34m新的内存和 swap 情况：\033[0m"
-free -h
+echo -e "\n\033[34m新的内存和 swap 情况（单位：MB）：\033[0m"
+free -m
 
 echo -e "\n\033[32mswap 文件创建并启用成功。\033[0m"
 

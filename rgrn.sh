@@ -262,7 +262,9 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_ciphers .*|ssl_ciphers ALL:!aNULL:!eNULL:!EXPORT:!SSLv2:!DES:!3DES:!MD5:!PSK:!RC4:!IDEA:!SEED:!CBC:!DHE:!kRSA:!SRP:!kDHd:!DSS:!EXP:!ADH:!AECDH:!DH:!LOW:@STRENGTH;|" "$NGINX_CONFIG_FILE"
+ pause "xxx ok"
 	sudo sed -i "/ssl_ciphers/ {N;s/^\(\s*\)ssl_ciphers.*/&\1ssl_prefer_server_ciphers on;\n/}" "$NGINX_CONFIG_FILE"
+ pause "yyy ok"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 

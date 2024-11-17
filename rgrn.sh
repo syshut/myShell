@@ -189,7 +189,7 @@ if [ "$CHOICE" -eq 1 ]; then
 
 	# 申请证书。多域名 SAN模式，https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert
 	# DNS Cloudflare API， https://github.com/acmesh-official/acme.sh/wiki/dnsapi#dns_cf
- 
+
 	if systemctl is-active --quiet nginx; then
 		sudo systemctl stop nginx
 	fi
@@ -199,7 +199,7 @@ if [ "$CHOICE" -eq 1 ]; then
  	read -p "请输入 Cloudflare DNS 令牌: " CF_Token
 	export CF_Account_ID="$CF_Account_ID"
  	export CF_Token="$CF_Token"
- 
+
 	/root/.acme.sh/acme.sh --issue --dns dns_cf -d $DOMAIN -d *.$DOMAIN --keylength ec-384
 
 	mkdir -p /usr/local/etc/xray/ssl
@@ -219,13 +219,12 @@ if [ "$CHOICE" -eq 1 ]; then
 	NGINX_CONFIG_FILE="/etc/nginx/conf.d/reality.conf"
 	sudo touch "$NGINX_CONFIG_FILE"
 
-
 	# 下载文件并提取配置
 	wget -q https://raw.githubusercontent.com/XTLS/Xray-examples/refs/heads/main/VLESS-GRPC/README.md -O - | \
 		awk '/^server \{/ {f=1} f; /^\}/ {print; f=0}' | \
 		sed '/# 在 location 后填写/,/^\}/d' | \
 		sed '/^#/d' > /etc/nginx/conf.d/reality.conf
-	
+
 	# 验证配置是否已正确写入
 	if grep -q "server {" /etc/nginx/conf.d/reality.conf; then
 		echo "Successfully updated /etc/nginx/conf.d/reality.conf with the new server block."
@@ -246,10 +245,10 @@ if [ "$CHOICE" -eq 1 ]; then
 		exit 1
 	fi
 	echo "Extracted root: $NEW_ROOT"
-	
+
 	# 使用 sed 替换 reality.conf 文件中的 root 值
 	sed -i "s|^\(\s*\)root .*;|\1root $NEW_ROOT;|" "$NGINX_CONFIG_FILE"
-	
+
 	# 确认修改成功
 	if grep -q "root $NEW_ROOT;" "$NGINX_CONFIG_FILE"; then
 		echo "Updated root directive in $NGINX_CONFIG_FILE to: $NEW_ROOT"
@@ -257,14 +256,12 @@ if [ "$CHOICE" -eq 1 ]; then
 		echo "Error: Failed to update root directive in $NGINX_CONFIG_FILE"
 		exit 1
 	fi
-	
+
 	# Step 5: 修改 ssl_certificate 和 ssl_certificate_key
 	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_ciphers .*|ssl_ciphers ALL:!aNULL:!eNULL:!EXPORT:!SSLv2:!DES:!3DES:!MD5:!PSK:!RC4:!IDEA:!SEED:!CBC:!DHE:!kRSA:!SRP:!kDHd:!DSS:!EXP:!ADH:!AECDH:!DH:!LOW:@STRENGTH;|" "$NGINX_CONFIG_FILE"
- pause "xxx ok"
-	sudo sed -i "/ssl_ciphers/ {N;s/^\(\s*\)ssl_ciphers.*/&\1ssl_prefer_server_ciphers on;\n/}" "$NGINX_CONFIG_FILE"
- pause "yyy ok"
+	sudo sed -i "/ssl_ciphers/ {s/^\(\s*\)ssl_ciphers.*/&\n\1ssl_prefer_server_ciphers on;/}" "$NGINX_CONFIG_FILE"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 

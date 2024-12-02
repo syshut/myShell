@@ -241,10 +241,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i 's|listen 443 ssl http2;|listen 443 ssl;|g' "$NGINX_CONFIG_FILE"
 	sudo sed -i 's|listen \[\:\:\]\:443 ssl http2;|listen [::]:443 ssl;|g' "$NGINX_CONFIG_FILE"
 	# 在最后添加 http2 on;
-	sudo sed -i '/listen \[\:\:\]\:443 ssl;/{
-		N
-		s|\(.*\)\n\(.*listen \[\:\:\]\:443 ssl;\)|\2\n\1http2 on;|
-	}' "$NGINX_CONFIG_FILE"
+	sed -i 's/^\(.*\)listen \[::\]:443 ssl;$/\0\n\1http2 on;/' "$NGINX_CONFIG_FILE"
 
 	# 确认修改成功
 	if grep -q "http2 on;" "$NGINX_CONFIG_FILE"; then

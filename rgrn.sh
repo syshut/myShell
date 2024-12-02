@@ -219,7 +219,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	NGINX_CONFIG_FILE="/etc/nginx/conf.d/reality.conf"
 	sudo touch "$NGINX_CONFIG_FILE"
 
-	# 下载文件并提取配置
+	# Step 2: 下载文件并提取配置
 	wget -q https://raw.githubusercontent.com/XTLS/Xray-examples/refs/heads/main/VLESS-GRPC/README.md -O - | \
 		awk '/^server \{/ {f=1} f; /^\}/ {print; f=0}' | \
 		sed '/# 在 location 后填写/,/^\}/d' | \
@@ -236,7 +236,25 @@ if [ "$CHOICE" -eq 1 ]; then
 	# Step 3: 替换 server_name
 	sudo sed -i "s|server_name .*|server_name ${DOMAIN};|" "$NGINX_CONFIG_FILE"
 
-	# Step 4: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
+	# Step 4: 修改 http2 指令
+	# 删除原有的 http2 并在后面添加 http2 on;，只添加一行
+	sudo sed -i 's|listen 443 ssl http2;|listen 443 ssl;|g' "$NGINX_CONFIG_FILE"
+	sudo sed -i 's|listen \[\:\:\]\:443 ssl http2;|listen [::]:443 ssl;|g' "$NGINX_CONFIG_FILE"
+	# 在最后添加 http2 on;
+	sudo sed -i '/listen \[\:\:\]\:443 ssl;/{
+		N
+		s|\(.*\)\n\(.*listen \[\:\:\]\:443 ssl;\)|\2\n\1http2 on;|
+	}' "$NGINX_CONFIG_FILE"
+
+	# 确认修改成功
+	if grep -q "http2 on;" "$NGINX_CONFIG_FILE"; then
+		echo "Successfully added 'http2 on;' to the configuration."
+	else
+		echo "Error: Failed to add 'http2 on;' to the configuration."
+	exit 1
+	fi
+
+	# Step 5: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
 	DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
 	NEW_ROOT=$(awk '/location \/ {/,/}/ {if ($1 == "root") print $2}' "$DEFAULT_CONF" | tr -d ';')
 	# 检查是否成功提取到 root 值
@@ -257,7 +275,7 @@ if [ "$CHOICE" -eq 1 ]; then
 		exit 1
 	fi
 
-	# Step 5: 修改 ssl_certificate 和 ssl_certificate_key
+	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
 	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_ciphers .*|ssl_ciphers ALL:!aNULL:!eNULL:!EXPORT:!SSLv2:!DES:!3DES:!MD5:!PSK:!RC4:!IDEA:!SEED:!CBC:!DHE:!kRSA:!SRP:!kDHd:!DSS:!EXP:!ADH:!AECDH:!DH:!LOW:@STRENGTH;|" "$NGINX_CONFIG_FILE"

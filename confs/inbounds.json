@@ -1,37 +1,37 @@
 {
-    "inbounds": [
-        {
-            "listen": "0.0.0.0",
-            "port": 80,
-            "protocol": "vless",
-            "settings": {
-                "clients": [
-                    {
-                        "id": "drEwvgYhS15C",
-                        "flow": ""
-                    }
-                ],
-                "decryption": "none"
-            },
-            "streamSettings": {
-                "network": "grpc",
-                "security": "reality",
-                "realitySettings": {
-                    "show": false,
-                    "dest": "www.yahoo.com:443",
-                    "xver": 0,
-                    "serverNames": ["www.yahoo.com", "news.yahoo.com"],
-                    "privateKey": "kOsBHSgxhAfCeQIQyJvupiXTmQrMmsqi6y6Wc5OQZXc",
-                    "shortIds": ["d49d578f280fd83a"]
-                },
-                "grpcSettings": {
-                    "serviceName": ""
-                }
-            },
-            "sniffing": {
-                "enabled": true,
-                "destOverride": ["http", "tls", "quic"]
-            }
+  "inbounds": [
+    {
+      "listen": "0.0.0.0",
+      "port": 443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "drEwvgYhS15C",
+            "flow": ""
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "dest": "8443",
+          "xver": 1,
+          "serverNames": ["www.yahoo.com", "news.yahoo.com"],
+          "privateKey": "kOsBHSgxhAfCeQIQyJvupiXTmQrMmsqi6y6Wc5OQZXc",
+          "shortIds": ["d49d578f280fd83a"]
+        },
+        "grpcSettings": {
+          "serviceName": "grpc"
         }
-    ]
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"]
+      }
+    }
+  ]
 }

@@ -83,7 +83,9 @@ read -p "请输入别名: " REMARKS
 
 read -p "请输入网站的端口号 (如 443): " PORT
 
-read -p "请输入 Reality 的端口号 (如 8443): " RPORT
+if [ "$CHOICE" -eq 1 ]; then
+	read -p "请输入 Reality 的端口号 (如 8443): " RPORT
+fi
 
 # 验证输入是否为1到5位的数字，并且在1到65535之间
 if ! [[ "$PORT" =~ ^[1-9][0-9]{0,4}$ ]] || [ "$PORT" -gt 65535 ]; then

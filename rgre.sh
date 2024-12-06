@@ -110,7 +110,7 @@ sed -i "s/\"id\": \".*\"/\"id\": \"$UUID\"/" "$CONFIG_FILE"
 # Step 5: 修改 "dest" 和 "serverNames" 中的域名
 if [ "$CHOICE" -eq 1 ]; then
   sed -i "s/\"dest\": \".*\"/\"dest\": \"$RPORT\"/" "$CONFIG_FILE"
-  sed -i "s/\"xver\": .*/\"xver\": 1/" "$CONFIG_FILE"
+  sed -i "s/\"xver\": .*/\"xver\": 1,/" "$CONFIG_FILE"
 else
   sed -i "s/\"dest\": \".*\"/\"dest\": \"$DOMAIN:443\"/" "$CONFIG_FILE"
 fi

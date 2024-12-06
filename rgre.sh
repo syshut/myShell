@@ -228,7 +228,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	curl -o "$NGINX_CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/nginx.conf"
 
 	# Step 3: 替换端口
-  sudo sed -i 's/8443/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
+	sudo sed -i 's/443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
 
 	# Step 4: 替换 server_name
 	sudo sed -i "s|server_name .*|server_name ${DOMAIN};|" "$NGINX_CONFIG_FILE"
@@ -261,6 +261,9 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i "/ssl_ciphers/ {s/^\(\s*\)ssl_ciphers.*/&\n\1ssl_prefer_server_ciphers on;/}" "$NGINX_CONFIG_FILE"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
+
+	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
+	sudo sed -i 's/2011/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
 	systemctl restart nginx && systemctl restart xray
 fi

@@ -262,7 +262,10 @@ if [ "$CHOICE" -eq 1 ]; then
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 
-	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
+	# Step 6: 修改路径
+	sed -i 's|location /grpc|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
+
+	# Step 7: 修改端口
 	sudo sed -i 's/2011/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
 	systemctl restart nginx && systemctl restart xray

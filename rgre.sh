@@ -102,6 +102,10 @@ fi
 
 # Step 3: 修改配置文件
 # 修改 "port" 字段
+sed -i "/\"routing\":/,/]/s/example\.com/$DOMAIN/" "$CONFIG_FILE"
+
+# Step 3: 修改配置文件
+# 修改 "port" 字段
 sed -i "/\"inbounds\":/,/]/s/\"port\": 80/\"port\": $PORT/" "$CONFIG_FILE"
 
 # Step 4: 替换 "id" 字段

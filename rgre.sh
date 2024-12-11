@@ -228,7 +228,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	NGINX_CONFIG_FILE="/etc/nginx/conf.d/reality.conf"
 
 	# Step 2: 下载文件并提取配置
-	curl -o "$NGINX_CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/nginx.conf"
+	curl -o "$NGINX_CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/server.conf"
 
 	# Step 3: 替换端口
 	sudo sed -i 's/443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"

@@ -1,0 +1,102 @@
+{
+    "log": {
+        "loglevel": "warning"
+    },
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "rules": [
+            {
+                "inboundTag": [
+                    "dokodemo-in"
+                ],
+                // 重要，这个域名列表需要和 realitySettings 的 serverNames 保持一致
+                "domain": [
+                    "example.com"
+                ],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "port": "80",
+                "network": "udp",
+                "outboundTag": "block"
+            },
+            {
+                "type": "field",
+                "ip": ["geoip:private"],
+                "outboundTag": "block"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "tag": "dokodemo-in",
+            "listen": "0.0.0.0",
+            "port": 80,
+            "protocol": "dokodemo-door",
+            "settings": {
+                "address": "127.0.0.1",
+                "port": 4431,  // 指向内网中的 reality 端口，示例是这个端口，如果要自己修改了记得这里和下面的 reality 入站都要修改
+                "network": "tcp"
+            },
+            "sniffing": { // 这里的 sniffing 不是多余的，别乱动
+                "enabled": true,
+                "destOverride": [
+                    "tls"
+                ],
+                "routeOnly": true
+            }
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": 4431,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "drEwvgYhS15C",
+                        "flow": ""
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "grpc",
+                "security": "reality",
+                "realitySettings": {
+                    "show": false,
+                    "dest": "www.yahoo.com:443",
+                    "xver": 0,
+                    "serverNames": ["www.yahoo.com", "news.yahoo.com"],
+                    "privateKey": "kOsBHSgxhAfCeQIQyJvupiXTmQrMmsqi6y6Wc5OQZXc",
+                    "shortIds": ["d49d578f280fd83a"]
+                },
+                "grpcSettings": {
+                    "serviceName": ""
+                }
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": ["http", "tls", "quic"]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+    ],
+    "policy": {
+        "levels": {
+            "0": {
+                "handshake": 2,
+                "connIdle": 120
+            }
+        }
+    }
+}

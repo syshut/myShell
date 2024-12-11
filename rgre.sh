@@ -278,8 +278,8 @@ config_file="/etc/nginx/nginx.conf"
 sed -i "/^http {/i\
 stream {\\
     server {\\
-        listen 443 udp reuseport;\\
-        listen [::]:443 udp reuseport;\\
+        listen ${PORT} udp reuseport;\\
+        listen [::]:${PORT} udp reuseport;\\
         proxy_pass 127.0.0.1:${RPORT};\\
         proxy_timeout 20s;\\
     }\\

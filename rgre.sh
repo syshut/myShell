@@ -273,21 +273,20 @@ if [ "$CHOICE" -eq 1 ]; then
 	# Step 8: 修改端口
 	sudo sed -i 's/2011/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
-	config_file="/etc/nginx/nginx.conf"
-	# 使用 sed 在 http { 之前插入内容
-	sed -i '/^http {/i\
-	stream {\
-	    server {\
-	        listen 443 udp reuseport;\
-	        listen [::]:443 udp reuseport;\
-	        proxy_pass 127.0.0.1:$RPORT;\
-	        proxy_timeout 20s;\
-	    }\
-	}\
-	\
-	\
-	' "$config_file"
-	echo "内容已成功插入 $config_file"
+config_file="/etc/nginx/nginx.conf"
+# 使用 sed 在 http { 之前插入内容
+sed -i "/^http {/i\
+stream {\
+    server {\
+        listen 443 udp reuseport;\
+        listen [::]:443 udp reuseport;\
+        proxy_pass 127.0.0.1:${RPORT};\
+        proxy_timeout 20s;\
+    }\
+}\
+\
+" "$config_file"
+echo "内容已成功插入 $config_file"
 
 	systemctl restart nginx && systemctl restart xray
 fi

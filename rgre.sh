@@ -257,6 +257,22 @@ if [ "$CHOICE" -eq 1 ]; then
 		exit 1
 	fi
 
+	config_file="/etc/nginx/nginx.conf"
+	# 使用 sed 在 http { 之前插入内容
+	sed -i '/^http {/i\
+	stream {\
+	    server {\
+	        listen 443 udp reuseport;\
+	        listen [::]:443 udp reuseport;\
+	        proxy_pass 127.0.0.1:$RPORT;\
+	        proxy_timeout 20s;\
+	    }\
+	}\
+	\
+	\
+	' "$config_file"
+	echo "内容已成功插入 $config_file"
+
 	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
 	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
 	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"

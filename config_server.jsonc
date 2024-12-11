@@ -35,10 +35,10 @@
             "protocol": "dokodemo-door",
             "settings": {
                 "address": "127.0.0.1",
-                "port": 4431,  // 指向内网中的 reality 端口，示例是这个端口，如果要自己修改了记得这里和下面的 reality 入站都要修改
+                "port": 4431,
                 "network": "tcp"
             },
-            "sniffing": { // 这里的 sniffing 不是多余的，别乱动
+            "sniffing": {
                 "enabled": true,
                 "destOverride": [
                     "tls"

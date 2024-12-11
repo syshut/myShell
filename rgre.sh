@@ -50,7 +50,7 @@ SHORTID=$(cat sid)
 CONFIG_FILE="$XRAY_CONFIG_DIR/VLESS-gRPC-REALITY.json"
 
 for i in {1..3}; do
-	curl -sSL -o "$CONFIG_FILE" "https://github.com/syshut/myShell/blob/main/config_server.jsonc" && break
+	curl -sSL -o "$CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/config_server.jsonc" && break
 	echo "尝试重新下载配置文件 ($i/3)..."
 	sleep 2
 done

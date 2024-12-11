@@ -276,15 +276,15 @@ if [ "$CHOICE" -eq 1 ]; then
 config_file="/etc/nginx/nginx.conf"
 # 使用 sed 在 http { 之前插入内容
 sed -i "/^http {/i\
-stream {
-    server {
-        listen 443 udp reuseport;
-        listen [::]:443 udp reuseport;
-        proxy_pass 127.0.0.1:${RPORT};
-        proxy_timeout 20s;
-    }
-}
-
+stream {\\
+    server {\\
+        listen 443 udp reuseport;\\
+        listen [::]:443 udp reuseport;\\
+        proxy_pass 127.0.0.1:${RPORT};\\
+        proxy_timeout 20s;\\
+    }\\
+}\\
+\\
 " "$config_file"
 echo "内容已成功插入 $config_file"
 

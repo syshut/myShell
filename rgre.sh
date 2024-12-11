@@ -235,7 +235,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	curl -o "$NGINX_CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/server.conf"
 
 	# Step 3: 替换端口
-	sudo sed -i 's/443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
+	sudo sed -i 's/8443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
 
 	# Step 4: 替换 server_name
 	sudo sed -i "s|server_name .*|server_name ${DOMAIN};|" "$NGINX_CONFIG_FILE"
@@ -261,6 +261,18 @@ if [ "$CHOICE" -eq 1 ]; then
 		exit 1
 	fi
 
+	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
+	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
+
+	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
+
+	# Step 7: 修改路径
+	sed -i 's|location /grpc|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
+
+	# Step 8: 修改端口
+	sudo sed -i 's/2011/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
+
 	config_file="/etc/nginx/nginx.conf"
 	# 使用 sed 在 http { 之前插入内容
 	sed -i '/^http {/i\
@@ -276,18 +288,6 @@ if [ "$CHOICE" -eq 1 ]; then
 	\
 	' "$config_file"
 	echo "内容已成功插入 $config_file"
-
-	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
-	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
-	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
-
-	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
-
-	# Step 6: 修改路径
-	sed -i 's|location /grpc|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
-
-	# Step 7: 修改端口
-	sudo sed -i 's/2011/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
 	systemctl restart nginx && systemctl restart xray
 fi

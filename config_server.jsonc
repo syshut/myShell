@@ -9,7 +9,6 @@
                 "inboundTag": [
                     "dokodemo-in"
                 ],
-                // 重要，这个域名列表需要和 realitySettings 的 serverNames 保持一致
                 "domain": [
                     "example.com"
                 ],

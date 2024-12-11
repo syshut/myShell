@@ -102,7 +102,7 @@ fi
 
 # Step 3: 修改配置文件
 # 修改 "port" 字段
-sed -i "s/example\\.com/$DOMAIN www.$DOMAIN/g" "$CONFIG_FILE"
+sed -i "s/example\\.com/$DOMAIN/g" "$CONFIG_FILE"
 
 # Step 3: 修改配置文件
 # 修改 "port" 字段
@@ -238,7 +238,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i 's/8443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
 
 	# Step 4: 替换 server_name
-	sudo sed -i "s|server_name .*|server_name ${DOMAIN};|" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|server_name .*|server_name ${DOMAIN} www.${DOMAIN};|" "$NGINX_CONFIG_FILE"
 
 	# Step 5: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
 	DEFAULT_CONF="/etc/nginx/conf.d/default.conf"

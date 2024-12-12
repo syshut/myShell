@@ -235,7 +235,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	curl -o "$NGINX_CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/server.conf"
 
 	# Step 3: 替换端口
-	sudo sed -i 's/8443/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
+	sudo sed -i 's/88888/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
 
 	# Step 4: 替换 server_name
 	sudo sed -i "s|server_name .*|server_name ${DOMAIN} www.${DOMAIN};|" "$NGINX_CONFIG_FILE"

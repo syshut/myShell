@@ -273,6 +273,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	# Step 8: 修改端口
 	sudo sed -i 's/99999/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
+<<'COMMENT'
 config_file="/etc/nginx/nginx.conf"
 # 使用 sed 在 http { 之前插入内容
 sed -i "/^http {/i\
@@ -287,6 +288,7 @@ stream {\\
 \\
 " "$config_file"
 echo "内容已成功插入 $config_file"
+COMMENT
 
 	systemctl restart nginx && systemctl restart xray
 fi

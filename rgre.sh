@@ -93,7 +93,7 @@ if ! [[ "$PORT" =~ ^[1-9][0-9]{0,4}$ ]] || [ "$PORT" -gt 65535 ]; then
 	exit 1
 fi
 
-read -p "请输入 serviceName (如 grpc): " SERVICE_NAME
+read -p "请输入 serviceName (如 grpc / VRLdGZ9k): " SERVICE_NAME
 if [ -z "$SERVICE_NAME" ]; then
 	echo "serviceName 不能为空！"
 	exit 1

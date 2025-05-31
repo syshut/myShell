@@ -268,7 +268,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 
 	# Step 7: 修改路径
-	sed -i 's|location /grpc|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
+	sed -i 's|location /VRLdGZ9k|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
 
 	# Step 8: 修改端口
 	sudo sed -i 's/99999/'"$PORT"'/g' "$NGINX_CONFIG_FILE"

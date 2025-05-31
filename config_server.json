@@ -35,7 +35,7 @@
             "protocol": "dokodemo-door",
             "settings": {
                 "address": "127.0.0.1",
-                "port": 4431,
+                "port": 2023,
                 "network": "tcp"
             },
             "sniffing": {
@@ -48,7 +48,7 @@
         },
         {
             "listen": "127.0.0.1",
-            "port": 4431,
+            "port": 2023,
             "protocol": "vless",
             "settings": {
                 "clients": [

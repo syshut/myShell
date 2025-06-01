@@ -274,6 +274,13 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i 's/99999/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
 config_file="/etc/nginx/nginx.conf"
+
+# 检查文件是否存在
+if [ ! -f "$config_file" ]; then
+    echo "错误: 配置文件 $config_file 不存在"
+    exit 1
+fi
+
 # 使用 sed 在 http { 之前插入内容
 sed -i "/^http {/i\
 stream {\\
@@ -286,9 +293,20 @@ stream {\\
 }\\
 \\
 " "$config_file"
+
+sed -i 's/\$remote_addr/\$client_ip/g' "$config_file"
+
+sed -i '/^http {/a\
+    #创建自定义变量 $client_ip 获取客户端真实 IP，其配置如下：\
+    map $http_x_forwarded_for $client_ip {\
+        "" $remote_addr;\
+        "~*(?P<firstAddr>([0-9a-f]{0,4}:){1,7}[0-9a-f]{1,4}|([0-9]{1,3}\.){3}[0-9]{1,3})$" $firstAddr;\
+    }\
+' "$config_file"
+
 echo "内容已成功插入 $config_file"
 
-	systemctl restart nginx && systemctl restart xray
+systemctl restart nginx && systemctl restart xray
 fi
 
 # 输出分享链接

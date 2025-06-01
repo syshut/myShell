@@ -238,7 +238,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	sudo sed -i 's/88888/'"$RPORT"'/g' "$NGINX_CONFIG_FILE"
 
 	# Step 4: 替换 server_name
-	sudo sed -i "s|server_name .*|server_name ${DOMAIN} www.${DOMAIN};|" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|example\.com|${DOMAIN} www.${DOMAIN}|g" "$NGINX_CONFIG_FILE"
 
 	# Step 5: 获取 /etc/nginx/conf.d/default.conf 中的 root 指令内容并替换
 	DEFAULT_CONF="/etc/nginx/conf.d/default.conf"
@@ -261,9 +261,9 @@ if [ "$CHOICE" -eq 1 ]; then
 		exit 1
 	fi
 
-	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key
-	sudo sed -i "s|ssl_certificate .*|ssl_certificate /usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer;|" "$NGINX_CONFIG_FILE"
-	sudo sed -i "s|ssl_certificate_key .*|ssl_certificate_key /usr/local/etc/xray/ssl/${DOMAIN}.key;|" "$NGINX_CONFIG_FILE"
+	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key 路径
+	sudo sed -i "s|/path/to/example\.cer|/usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer|g" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|/path/to/example\.key|/usr/local/etc/xray/ssl/${DOMAIN}.key|g" "$NGINX_CONFIG_FILE"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 

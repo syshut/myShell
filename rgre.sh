@@ -302,7 +302,7 @@ sed -i '0,/\$client_ip/{
     #创建自定义变量 $client_ip 获取客户端真实 IP，其配置如下：\
     map $http_x_forwarded_for $client_ip {\
         "" $remote_addr;\
-        "~*(?P<firstAddr>([0-9a-f]{0,4}:){1,7}[0-9a-f]{1,4}|([0-9]{1,3}\.){3}[0-9]{1,3})$" $firstAddr;\
+        "~*(?P<firstAddr>([0-9a-f]{0,4}:){1,7}[0-9a-f]{1,4}|([0-9]{1,3}\\.){3}[0-9]{1,3})$" $firstAddr;\
     }\
 
     }

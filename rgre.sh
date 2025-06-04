@@ -195,6 +195,8 @@ if [ "$CHOICE" -eq 1 ]; then
 	# 安装 acme.sh
 	apt update && apt install -y socat
 	curl https://get.acme.sh | sh -s email=my@example.com
+ 	# 设置为自动升级
+	/root/.acme.sh/acme.sh --upgrade --auto-upgrade
 
 
 	# 将默认的 zerossl 设置为 lets encrypt

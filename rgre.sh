@@ -273,42 +273,44 @@ if [ "$CHOICE" -eq 1 ]; then
 	# Step 8: 修改端口
 	sudo sed -i 's/99999/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
 
-config_file="/etc/nginx/nginx.conf"
+<<'EDIT_NGINX_CONFIG'
+	config_file="/etc/nginx/nginx.conf"
 
-# 检查文件是否存在
-if [ ! -f "$config_file" ]; then
-    echo "错误: 配置文件 $config_file 不存在"
-    exit 1
-fi
+	# 检查文件是否存在
+	if [ ! -f "$config_file" ]; then
+	    echo "错误: 配置文件 $config_file 不存在"
+	    exit 1
+	fi
 
-# 使用 sed 在 http { 之前插入内容
-sed -i "/^http {/i\
-stream {\\
-    server {\\
-        listen ${PORT} udp reuseport;\\
-        listen [::]:${PORT} udp reuseport;\\
-        proxy_pass 127.0.0.1:${RPORT};\\
-        proxy_timeout 20s;\\
-    }\\
-}\\
-\\
-" "$config_file"
+	# 使用 sed 在 http { 之前插入内容
+	sed -i "/^http {/i\
+	stream {\\
+	    server {\\
+	        listen ${PORT} udp reuseport;\\
+	        listen [::]:${PORT} udp reuseport;\\
+	        proxy_pass 127.0.0.1:${RPORT};\\
+	        proxy_timeout 20s;\\
+	    }\\
+	}\\
+	\\
+	" "$config_file"
 
-sed -i 's/\$remote_addr/\$client_ip/g' "$config_file"
+	sed -i 's/\$remote_addr/\$client_ip/g' "$config_file"
 
-sed -i '0,/\$client_ip/{
-    /\$client_ip/{
-        i\
-    #创建自定义变量 $client_ip 获取客户端真实 IP，其配置如下：\
-    map $http_x_forwarded_for $client_ip {\
-        "" $remote_addr;\
-        "~*(?P<firstAddr>([0-9a-f]{0,4}:){1,7}[0-9a-f]{1,4}|([0-9]{1,3}\\.){3}[0-9]{1,3})$" $firstAddr;\
-    }\
+	sed -i '0,/\$client_ip/{
+	    /\$client_ip/{
+	        i\
+	    #创建自定义变量 $client_ip 获取客户端真实 IP，其配置如下：\
+	    map $http_x_forwarded_for $client_ip {\
+	        "" $remote_addr;\
+	        "~*(?P<firstAddr>([0-9a-f]{0,4}:){1,7}[0-9a-f]{1,4}|([0-9]{1,3}\\.){3}[0-9]{1,3})$" $firstAddr;\
+	    }\
 
-    }
-}' "$config_file"
+	    }
+	}' "$config_file"
+EDIT_NGINX_CONFIG
 
-systemctl restart nginx && systemctl restart xray
+	systemctl restart nginx && systemctl restart xray
 fi
 
 # 输出分享链接

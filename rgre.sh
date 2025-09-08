@@ -42,8 +42,8 @@ fi
 
 # 从生成的文件中读取数据
 UUID=$(cat uuid)
-PRIVATE_KEY=$(awk -F ': ' '/Private key/ {print $2}' key)
-PUBLIC_KEY=$(awk -F ': ' '/Public key/ {print $2}' key)
+PRIVATE_KEY=$(awk -F ': ' '/PrivateKey/ {print $2}' key)
+PUBLIC_KEY=$(awk -F ': ' '/Password/ {print $2}' key)
 SHORTID=$(cat sid)
 
 # Step 2: 下载配置文件

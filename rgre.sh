@@ -118,13 +118,13 @@ if [ "$CHOICE" -eq 1 ]; then
 else
   sed -i "s/\"dest\": \".*\"/\"dest\": \"$DOMAIN:443\"/" "$CONFIG_FILE"
 fi
-sed -i "s/\"serverNames\": \[.*\]/\"serverNames\": [\"$DOMAIN\"]/" "$CONFIG_FILE"
+jq --arg domain "$DOMAIN" '.serverNames = [$domain]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
 # Step 6: 修改 "privateKey"
 sed -i "s|\"privateKey\": \".*\"|\"privateKey\": \"$PRIVATE_KEY\"|" "$CONFIG_FILE"
 
 # Step 7: 修改 "shortIds"
-sed -i "s/\"shortIds\": \[\".*\"\]/\"shortIds\": [\"$SHORTID\"]/" "$CONFIG_FILE"
+jq --arg shortid "$SHORTID" '.shortIds = [$shortid]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
 # Step 8: 修改 "serviceName"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"

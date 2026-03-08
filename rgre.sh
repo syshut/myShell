@@ -118,13 +118,13 @@ if [ "$CHOICE" -eq 1 ]; then
 else
   sed -i "s/\"dest\": \".*\"/\"dest\": \"$DOMAIN:443\"/" "$CONFIG_FILE"
 fi
-jq --arg domain "$DOMAIN" '.serverNames = [$domain]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+jq --arg dom "$DOMAIN" '(.. | select(has("serverNames")?)).serverNames = [$dom]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
 # Step 6: 修改 "privateKey"
 sed -i "s|\"privateKey\": \".*\"|\"privateKey\": \"$PRIVATE_KEY\"|" "$CONFIG_FILE"
 
 # Step 7: 修改 "shortIds"
-jq --arg shortid "$SHORTID" '.shortIds = [$shortid]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+jq --arg sid "$SHORTID" '(.. | select(has("shortIds")?)).shortIds = [$sid]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
 # Step 8: 修改 "serviceName"
 sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
@@ -264,8 +264,8 @@ if [ "$CHOICE" -eq 1 ]; then
 	fi
 
 	# Step 6: 修改 ssl_certificate 和 ssl_certificate_key 路径
-	sudo sed -i "s|/home/tls/h2y\.example\.com/h2y\.example\.com\.crt|/usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer|g" "$NGINX_CONFIG_FILE"
-	sudo sed -i "s|/home/tls/h2y\.example\.com/h2y\.example\.com\.key|/usr/local/etc/xray/ssl/${DOMAIN}.key|g" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|^\(\s*ssl_certificate\s\+\)[^;]\+|\1/usr/local/etc/xray/ssl/${DOMAIN}.fullchain.cer|" "$NGINX_CONFIG_FILE"
+	sudo sed -i "s|^\(\s*ssl_certificate_key\s\+\)[^;]\+|\1/usr/local/etc/xray/ssl/${DOMAIN}.key|" "$NGINX_CONFIG_FILE"
 
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 

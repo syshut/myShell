@@ -15,6 +15,12 @@
                 "outboundTag": "direct"
             },
             {
+                "inboundTag": [
+                    "dokodemo-in"
+                ],
+                "outboundTag": "block"
+            },
+            {
                 "port": "80",
                 "network": "udp",
                 "outboundTag": "block"

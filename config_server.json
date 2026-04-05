@@ -70,7 +70,7 @@
                 "security": "reality",
                 "realitySettings": {
                     "show": false,
-                    "dest": "www.yahoo.com:443",
+                    "target": "www.yahoo.com:443",
                     "xver": 0,
                     "serverNames": [
                         "www.yahoo.com",

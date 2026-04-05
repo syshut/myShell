@@ -127,7 +127,7 @@ sed -i "s|\"privateKey\": \".*\"|\"privateKey\": \"$PRIVATE_KEY\"|" "$CONFIG_FIL
 jq --arg sid "$SHORTID" '(.. | select(has("shortIds")?)).shortIds = [$sid]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
 # Step 8: 修改 "path"
-sed -i "s/\"path\": \"\"/\"path\": \"/$path\"/" "$CONFIG_FILE"
+sed -i "s|\"path\": \"\"|\"path\": \"/$path\"|" "$CONFIG_FILE"
 
 # Step 9: 修改 "domainStrategy" 字段
 sed -i 's/"domainStrategy": "IPIfNonMatch"/"domainStrategy": "AsIs"/' "$CONFIG_FILE"
@@ -318,4 +318,4 @@ fi
 # 输出分享链接
 IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
-echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=xhttp&path=$path&mode=auto#$REMARKS"
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=xhttp&path=%2F$path&mode=auto#$REMARKS"

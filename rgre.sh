@@ -72,9 +72,9 @@ if [ "$CHOICE" -eq 1 ]; then
 	fi
 else
 	echo "您选择了偷别人"
-	read -p "请输入 dest 伪装域名 (如 www.uclahealth.org): " DOMAIN
+	read -p "请输入 target 伪装域名 (如 www.uclahealth.org): " DOMAIN
 	if [ -z "$DOMAIN" ]; then
-		echo "dest 不能为空！"
+		echo "target 不能为空！"
 		exit 1
 	fi
 fi
@@ -111,12 +111,12 @@ sed -i "/\"inbounds\":/,/]/s/\"port\": 80/\"port\": $PORT/" "$CONFIG_FILE"
 # Step 4: 替换 "id" 字段
 sed -i "s/\"id\": \".*\"/\"id\": \"$UUID\"/" "$CONFIG_FILE"
 
-# Step 5: 修改 "dest" 和 "serverNames" 中的域名
+# Step 5: 修改 "target" 和 "serverNames" 中的域名
 if [ "$CHOICE" -eq 1 ]; then
-  sed -i "s/\"dest\": \".*\"/\"dest\": \"\/dev\/shm\/uds${RPORT}.sock\"/" "$CONFIG_FILE"
+  sed -i "s/\"target\": \".*\"/\"target\": \"\/dev\/shm\/uds${RPORT}.sock\"/" "$CONFIG_FILE"
   sed -i "s/\"xver\": .*/\"xver\": 1,/" "$CONFIG_FILE"
 else
-  sed -i "s/\"dest\": \".*\"/\"dest\": \"$DOMAIN:443\"/" "$CONFIG_FILE"
+  sed -i "s/\"target\": \".*\"/\"target\": \"$DOMAIN:443\"/" "$CONFIG_FILE"
 fi
 jq --arg dom "$DOMAIN" '(.. | select(has("serverNames")?)).serverNames = [$dom]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 

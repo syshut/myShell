@@ -47,7 +47,7 @@ PUBLIC_KEY=$(awk -F ': ' '/Password/ {print $2}' key)
 SHORTID=$(cat sid)
 
 # Step 2: 下载配置文件
-CONFIG_FILE="$XRAY_CONFIG_DIR/VLESS-gRPC-REALITY.json"
+CONFIG_FILE="$XRAY_CONFIG_DIR/VLESS-XHTTP-REALITY.json"
 
 for i in {1..3}; do
 	curl -sSL -o "$CONFIG_FILE" "https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/config_server.json" && break
@@ -93,9 +93,9 @@ if ! [[ "$PORT" =~ ^[1-9][0-9]{0,4}$ ]] || [ "$PORT" -gt 65535 ]; then
 	exit 1
 fi
 
-read -p "请输入 serviceName (如 grpc / VRLdGZ9k): " SERVICE_NAME
-if [ -z "$SERVICE_NAME" ]; then
-	echo "serviceName 不能为空！"
+read -p "请输入 path (如 xhttp / VLSpdG9k): " path
+if [ -z "$path" ]; then
+	echo "path 不能为空！"
 	exit 1
 fi
 
@@ -126,8 +126,8 @@ sed -i "s|\"privateKey\": \".*\"|\"privateKey\": \"$PRIVATE_KEY\"|" "$CONFIG_FIL
 # Step 7: 修改 "shortIds"
 jq --arg sid "$SHORTID" '(.. | select(has("shortIds")?)).shortIds = [$sid]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
 
-# Step 8: 修改 "serviceName"
-sed -i "s/\"serviceName\": \"\"/\"serviceName\": \"$SERVICE_NAME\"/" "$CONFIG_FILE"
+# Step 8: 修改 "path"
+sed -i "s/\"path\": \"\"/\"path\": \"/$path\"/" "$CONFIG_FILE"
 
 # Step 9: 修改 "domainStrategy" 字段
 sed -i 's/"domainStrategy": "IPIfNonMatch"/"domainStrategy": "AsIs"/' "$CONFIG_FILE"
@@ -270,7 +270,7 @@ if [ "$CHOICE" -eq 1 ]; then
 	curl -o "${NEW_ROOT}/index.html" https://raw.githubusercontent.com/syshut/myShell/refs/heads/main/netdisk.html
 
 	# Step 7: 修改路径
-	sed -i 's|location /VRLdGZ9k|location /'"$SERVICE_NAME"'|g' "$NGINX_CONFIG_FILE"
+	sed -i 's|location /VLSpdG9k|location /'"$path"'|g' "$NGINX_CONFIG_FILE"
 
 	# Step 8: 修改端口
 	sudo sed -i 's/99999/'"$PORT"'/g' "$NGINX_CONFIG_FILE"
@@ -318,4 +318,4 @@ fi
 # 输出分享链接
 IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com)
 
-echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=grpc&serviceName=$SERVICE_NAME&mode=gun#$REMARKS"
+echo "分享链接：vless://$UUID@$IP:$PORT?encryption=none&security=reality&sni=$DOMAIN&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORTID&type=xhttp&path=$path&mode=auto#$REMARKS"
